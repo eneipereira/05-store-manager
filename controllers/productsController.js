@@ -1,4 +1,5 @@
 const productsService = require('../services/productsService');
+const validators = require('../validators/validators');
 
 const productsController = {
   getAll: async (_req, res) => {
@@ -15,11 +16,13 @@ const productsController = {
   },
 
   register: async (req, res) => {
-    const { name } = req.body;
+    const body = await validators.validateBodyRegisterReq(req.body);
+    const { name } = await validators.validateBodyRegisterMin(body);
     const newProduct = await productsService.register(name);
 
     res.status(201).json(newProduct);
   },
+
 };
 
 module.exports = productsController;
