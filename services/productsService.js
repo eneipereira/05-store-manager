@@ -4,7 +4,9 @@ const productsModel = require('../models/productsModel');
 const productsService = {
   getAll: async () => {
     const products = await productsModel.getAll();
-
+    
+    products.sort((a, b) => a.id - b.id);
+    
     return products;
   },
 
