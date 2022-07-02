@@ -13,6 +13,13 @@ const productsController = {
 
     res.status(200).json(product);
   },
+
+  register: async (req, res) => {
+    const { name } = req.body;
+    const newProduct = await productsService.register(name);
+
+    res.status(201).json(newProduct);
+  },
 };
 
 module.exports = productsController;

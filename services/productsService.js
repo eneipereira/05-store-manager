@@ -17,6 +17,12 @@ const productsService = {
 
     return product;
   },
+
+  register: async (name) => {
+    const newProduct = await productsModel.register(name);
+
+    return newProduct;
+  },
 };
 
 module.exports = productsService;

@@ -16,6 +16,17 @@ const productsModel = {
 
     return product;
   },
+
+  register: async (name) => {
+    const query = 'insert into StoreManager.products (name)values (?)';
+
+    const [{ insertId }] = await db.query(query, [name]);
+
+    return {
+      id: insertId,
+      name,
+    };
+  },
 };
 
 module.exports = productsModel;
