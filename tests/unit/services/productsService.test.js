@@ -4,7 +4,7 @@ const Sinon = require('sinon');
 const NotFoundError = require('../../../errors/notFoundError');
 const productsModel = require('../../../models/productsModel');
 const productsService = require('../../../services/productsService');
-const products = require('../dbMock');
+const { products, newProduct } = require('../dbMock');
 
 use(chaiAsPromised)
 
@@ -32,7 +32,7 @@ describe('services/productsService', () => {
       Sinon.stub(productsModel, 'getAll').rejects();
 
       return expect(productsService.getAll())
-      .to.eventually.be.rejected
+        .to.eventually.be.rejected
     })
   })
 
@@ -41,9 +41,8 @@ describe('services/productsService', () => {
     it('should return an object with the right product as result', async () => {
       Sinon.stub(productsModel, 'getById').resolves(product)
 
-      const result = await productsService.getById(product.id)
-
-      expect(result).to.be.deep.eq(product)
+      expect(await productsService.getById(product.id))
+        .to.be.deep.eq(product)
     })
 
     it('should throw an error if productsModel.getById throws', () => {
@@ -58,6 +57,21 @@ describe('services/productsService', () => {
 
       return expect(productsService.getById(22))
         .to.eventually.be.rejectedWith(NotFoundError)
+    })
+  })
+  
+  describe('register', () => {
+    it('should return an object with the right product as result', () => {
+      Sinon.stub(productsModel, 'register').resolves(newProduct)
+  
+      return expect(productsService.register(newProduct.name)).to.eventually.be.deep.eq(newProduct)
+    })
+  
+    it('should throw an error if productsModel.getById throws', () => {
+      Sinon.stub(productsModel, 'register').rejects();
+  
+      return expect(productsService.register(newProduct.name))
+        .to.eventually.be.rejected
     })
   })
 })

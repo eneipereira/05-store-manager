@@ -4,7 +4,10 @@ const runSchema = require('./runSchema');
 
 const validators = {
   validateBodyRegisterReq: runSchema(Joi.object({
-    name: Joi.string().required().messages({ 'any.required': '"name" is required' }),
+    name: Joi.string().required().empty('').messages({
+      'any.required': '"name" is required',
+      'any.empty': '"name" is required',
+    }),
   })),
   validateBodyRegisterMin: runSchema(Joi.object({
     name: Joi.string().min(5)

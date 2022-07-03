@@ -4,4 +4,22 @@ const products = [
   { id: 3, name: 'Escudo do Capitão América' },
 ]
 
-module.exports = products;
+const newProduct = {
+  id: 4,
+  name: 'Manopla do Infinito'
+}
+
+const emptyName = {
+  name: '',
+}
+
+const shortName = {
+  name: 'Mano'
+}
+
+module.exports = {
+  products,
+  newProduct,
+  emptyName,
+  shortName
+};
