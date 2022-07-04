@@ -9,17 +9,7 @@ const newProduct = {
   name: 'Manopla do Infinito'
 }
 
-const emptyName = {
-  name: '',
-}
-
-const shortName = {
-  name: 'Mano'
-}
-
 module.exports = {
   products,
   newProduct,
-  emptyName,
-  shortName
 };
