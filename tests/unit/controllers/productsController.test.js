@@ -55,24 +55,24 @@ describe('controllers/productsController', () => {
   })
 
   describe('register', () => {
-    it('should throw an error if validators.validateBodyRegisterReq throws', () => {
-      Sinon.stub(validators, 'validateBodyRegisterReq').rejects()
+    it('should throw an error if validators.validateProdBodyReq throws', () => {
+      Sinon.stub(validators, 'validateProdBodyReq').rejects()
       
       return expect(productsController.register({}))
         .to.eventually.be.rejected
     })
 
-    it('should throw an error if validators.validateBodyRegisterMin throws', () => {
-      Sinon.stub(validators, 'validateBodyRegisterReq').resolves()
-      Sinon.stub(validators, 'validateBodyRegisterMin').rejects()
+    it('should throw an error if validators.validateProdBodyMin throws', () => {
+      Sinon.stub(validators, 'validateProdBodyReq').resolves()
+      Sinon.stub(validators, 'validateProdBodyMin').rejects()
   
       return expect(productsController.register({}))
         .to.eventually.be.rejected
     })
 
     it('should throw an error if productsService.register throws', () => {
-      Sinon.stub(validators, 'validateBodyRegisterReq').resolves()
-      Sinon.stub(validators, 'validateBodyRegisterMin').resolves()
+      Sinon.stub(validators, 'validateProdBodyReq').resolves()
+      Sinon.stub(validators, 'validateProdBodyMin').resolves()
       Sinon.stub(productsService, 'register').rejects()
   
       return expect(productsController.register({}))

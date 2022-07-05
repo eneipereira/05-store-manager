@@ -16,8 +16,8 @@ const productsController = {
   },
 
   register: async (req, res) => {
-    const body = await validators.validateBodyRegisterReq(req.body);
-    const { name } = await validators.validateBodyRegisterMin(body);
+    const body = await validators.validateProdBodyReq(req.body);
+    const { name } = await validators.validateProdBodyMin(body);
     const newProduct = await productsService.register(name);
 
     res.status(201).json(newProduct);
