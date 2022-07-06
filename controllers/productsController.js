@@ -23,6 +23,15 @@ const productsController = {
     res.status(201).json(newProduct);
   },
 
+  async update(req, res) {
+    const id = Number(req.params.id);
+    const body = await validators.validateProdBodyReq(req.body);
+    const { name } = await validators.validateProdBodyMin(body);
+
+    const updProduct = await productsService.update(id, name);
+
+    res.status(200).json(updProduct);
+  },
 };
 
 module.exports = productsController;

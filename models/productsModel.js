@@ -27,6 +27,25 @@ const productsModel = {
       name,
     };
   },
+
+  async update(name, id) {
+    const query = 'update StoreManager.products set name = ? where id = ?;';
+
+    await db.query(query, [name, id]);
+
+    return {
+      id,
+      name,
+    };
+  },
+
+  async exists(id) {
+    const query = 'select 1 from StoreManager.products where id = ?;';
+
+    const [[exists]] = await db.query(query, [id]);
+
+    return !!exists;
+  },
 };
 
 module.exports = productsModel;

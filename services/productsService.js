@@ -21,6 +21,16 @@ const productsService = {
 
     return newProduct;
   },
+
+  async update(id, name) {
+    const exists = await productsModel.exists(id);
+
+    if (!exists) throw new NotFoundError('Product not found');
+
+    const updProduct = await productsModel.update(name, id);
+
+    return updProduct;
+  },
 };
 
 module.exports = productsService;
