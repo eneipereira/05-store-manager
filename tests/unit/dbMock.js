@@ -9,7 +9,18 @@ const newProduct = {
   name: 'Manopla do Infinito'
 }
 
+const newSale = {
+  id: 1,
+  itemsSold: [
+    {
+    "productId": 1,
+    "quantity": 1
+    }
+  ]
+}
+
 module.exports = {
   products,
   newProduct,
+  newSale
 };

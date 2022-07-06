@@ -1,4 +1,4 @@
-const { salesService, checkExistsId } = require('../services/salesServices');
+const salesService = require('../services/salesService');
 const validators = require('../validators/validators');
 
 const salesController = {
@@ -6,7 +6,7 @@ const salesController = {
     await validators.validateSaleBodyReq(req.body);
     await validators.validateSaleBodyMin(req.body);
 
-    await checkExistsId(req.body);
+    await validators.checkExistsId(req.body);
 
     const newSale = await salesService.register(req.body);
 

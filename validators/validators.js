@@ -1,5 +1,7 @@
 const Joi = require('joi');
+const NotFoundError = require('../errors/notFoundError');
 const SemanticError = require('../errors/semanticError');
+const productsModel = require('../models/productsModel');
 const runSchema = require('./runSchema');
 
 const validators = {
@@ -27,6 +29,14 @@ const validators = {
     quantity: Joi.number().min(1)
       .error(new SemanticError('"quantity" must be greater than or equal to 1')),
   }))),
+
+  checkExistsId: async (items) => {
+    const ids = await productsModel.getAll();
+
+    const notExists = items.filter((item) => !ids.some(({ id }) => item.productId === id));
+
+    if (notExists.length) throw new NotFoundError('Product not found');
+  },
 };
 
 module.exports = validators;
