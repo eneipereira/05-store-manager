@@ -2,6 +2,19 @@ const salesService = require('../services/salesService');
 const validators = require('../validators/validators');
 
 const salesController = {
+  async getAll(_req, res) {
+    const sales = await salesService.getAll();
+
+    res.status(200).json(sales);
+  },
+
+  async getById(req, res) {
+    const id = Number(req.params.id);
+    const sale = await salesService.getById(id);
+
+    res.status(200).json(sale);
+  },
+
   register: async (req, res) => {
     await validators.validateSaleBodyReq(req.body);
     await validators.validateSaleBodyMin(req.body);

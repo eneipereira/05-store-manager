@@ -2,7 +2,7 @@ const db = require('./connection');
 
 const productsModel = {
   getAll: async () => {
-    const query = 'select * from StoreManager.products;';
+    const query = 'select * from StoreManager.products order by id asc;';
 
     const [products] = await db.query(query);
 
