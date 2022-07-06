@@ -4,12 +4,58 @@ const Sinon = require("sinon")
 const salesController = require("../../../controllers/salesController")
 const salesService = require("../../../services/salesService")
 const validators = require("../../../validators/validators")
-const { newSale } = require("../dbMock")
+const { newSale, sales, sale } = require("../dbMock")
 
 use(chaiAsPromised)
 
 describe('controllers/salesController', () => {
   beforeEach(Sinon.restore)
+
+  describe('getAll', () => {
+    it('should throw an error if salesService.getAll throws', () => {
+      Sinon.stub(salesService, 'getAll').rejects()
+
+      return expect(salesController.getAll({}, {}))
+        .to.eventually.be.rejected
+    })
+
+    it('should calls res.json if success', async () => {
+      Sinon.stub(salesService, 'getAll').resolves(sales)
+
+      const res = {
+        status: Sinon.stub().callsFake(() => res),
+        json: Sinon.stub().returns()
+      }
+
+      await salesController.getAll({}, res)
+
+      expect(res.status.getCall(0).args[0]).to.be.eq(200)
+      expect(res.json.getCall(0).args[0]).to.be.deep.eq(sales)
+    })
+  })
+
+  describe('getById', () => {
+    it('should throw an error if salesService.getById throws', () => {
+      Sinon.stub(salesService, 'getById').rejects()
+
+      return expect(salesController.getById({}, {}))
+        .to.eventually.be.rejected
+    })
+
+    it('should calls res.json if success', async () => {
+      Sinon.stub(salesService, 'getById').resolves(sale)
+
+      const res = {
+        status: Sinon.stub().callsFake(() => res),
+        json: Sinon.stub().returns()
+      }
+
+      await salesController.getById({ params: {} }, res)
+
+      expect(res.status.getCall(0).args[0]).to.be.eq(200)
+      expect(res.json.getCall(0).args[0]).to.be.deep.eq(sale)
+    })
+  })
 
   describe('register', () => {
     it('should throw an error if validators.validateSaleBodyReq throws', () => {

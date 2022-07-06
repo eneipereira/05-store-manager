@@ -19,15 +19,6 @@ describe('services/productsService', () => {
         .to.be.eventually.deep.eq(products)
     })
 
-    it('should return an objects array ordered by id', async () => {
-      Sinon.stub(productsModel, 'getAll').resolves(products)
-
-      const result = await productsService.getAll()
-      
-      expect(result[1]).to.haveOwnProperty('id', 2)
-      expect(result[2]).to.haveOwnProperty('id', 3)
-    })
-
     it('should throw an error if productModel.getAll throws', () => {
       Sinon.stub(productsModel, 'getAll').rejects();
 
