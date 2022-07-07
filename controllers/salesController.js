@@ -26,6 +26,18 @@ const salesController = {
     res.status(201).json(newSale);
   },
 
+  async update(req, res) {
+    const id = Number(req.params.id);
+    await validators.validateSaleBodyReq(req.body);
+    await validators.validateSaleBodyMin(req.body);
+
+    await validators.checkExistsId(req.body);
+
+    const updSale = await salesService.update(id, req.body);
+
+    res.status(200).json(updSale);
+  },
+
   async delete(req, res) {
     const id = Number(req.params.id);
 

@@ -35,6 +35,13 @@ const salesModel = {
 
     await db.query(query, [saleId, productId, quantity]);
   },
+
+  async update(id, { productId, quantity }) {
+    const query = `update StoreManager.sales_products set
+    quantity = ? where sale_id = ? and product_id = ?;`;
+
+    await db.query(query, [quantity, id, productId]);
+  },
   
   async exists(id) {
     const query = 'select 1 from StoreManager.sales where id = ?;';

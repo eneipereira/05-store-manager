@@ -25,6 +25,16 @@ const salesService = {
     return { id, itemsSold };
   },
 
+  async update(saleId, itemsUpdated) {
+    const exists = await salesModel.exists(saleId);
+
+    if (!exists) throw new NotFoundError('Sale not found');
+
+    await Promise.all(itemsUpdated.map((item) => salesModel.update(saleId, item)));
+
+    return { saleId, itemsUpdated };
+  },
+
   async delete(id) {
     const exists = await salesModel.exists(id);
 
