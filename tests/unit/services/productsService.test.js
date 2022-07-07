@@ -55,7 +55,8 @@ describe('services/productsService', () => {
     it('should return an object with the right product as result', () => {
       Sinon.stub(productsModel, 'register').resolves(newProduct)
   
-      return expect(productsService.register(newProduct.name)).to.eventually.be.deep.eq(newProduct)
+      return expect(productsService.register(newProduct.name))
+        .to.eventually.be.deep.eq(newProduct)
     })
   
     it('should throw an error if productsModel.getById throws', () => {
@@ -96,5 +97,36 @@ describe('services/productsService', () => {
       return expect(productsService.update(1, ''))
         .to.eventually.be.rejected
     })
+  })
+
+  describe('delete', () => {
+    it('should return undefined if success', () => {
+      Sinon.stub(productsModel, 'delete').resolves()
+
+      return expect(productsService.delete(1))
+        .to.eventually.be.undefined
+    });
+
+    it('should throw an error if productsModel.exists return false', () => {
+      Sinon.stub(productsModel, 'exists').resolves(false)
+
+      return expect(productsService.delete(22))
+        .to.eventually.be.rejectedWith(NotFoundError)
+    });
+
+    it('should throw an error if productsModel.exists throws', () => {
+      Sinon.stub(productsModel, 'exists').rejects()
+
+      return expect(productsService.delete(1))
+        .to.eventually.be.rejected
+    });
+
+    it('should throw an error if productsModel.delete throws', () => {
+      Sinon.stub(productsModel, 'exists').resolves()
+      Sinon.stub(productsModel, 'delete').rejects()
+
+      return expect(productsService.delete(1))
+        .to.eventually.be.rejected
+    });
   })
 })

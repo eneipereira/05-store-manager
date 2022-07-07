@@ -94,4 +94,20 @@ describe('models/productsModel', () => {
         .to.eventually.be.rejected
     })
   })
+
+  describe('delete', () => {
+    it('should return undefined if success', () => {
+      Sinon.stub(db, 'query').resolves()
+
+      return expect(productsModel.delete(1))
+        .to.eventually.be.undefined
+    })
+
+    it('should throw an error if db.query throws', () => {
+      Sinon.stub(db, 'query').rejects()
+
+      return expect(productsModel.delete(22))
+        .to.eventually.be.rejected
+    })
+  })
 })

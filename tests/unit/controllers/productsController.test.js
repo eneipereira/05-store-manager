@@ -53,89 +53,110 @@ describe('controllers/productsController', () => {
       expect(res.json.getCall(0).args[0]).to.be.deep.eq(products[2])
     })
   })
-
+  
   describe('register', () => {
     it('should throw an error if validators.validateProdBodyReq throws', () => {
       Sinon.stub(validators, 'validateProdBodyReq').rejects()
       
       return expect(productsController.register({}))
-        .to.eventually.be.rejected
+      .to.eventually.be.rejected
     })
-
+    
     it('should throw an error if validators.validateProdBodyMin throws', () => {
       Sinon.stub(validators, 'validateProdBodyReq').resolves()
       Sinon.stub(validators, 'validateProdBodyMin').rejects()
-  
+      
       return expect(productsController.register({}))
-        .to.eventually.be.rejected
+      .to.eventually.be.rejected
     })
-
+    
     it('should throw an error if productsService.register throws', () => {
       Sinon.stub(validators, 'validateProdBodyReq').resolves()
       Sinon.stub(validators, 'validateProdBodyMin').resolves()
       Sinon.stub(productsService, 'register').rejects()
-  
+      
       return expect(productsController.register({}))
-        .to.eventually.be.rejected
+      .to.eventually.be.rejected
     })
-
+    
     it('should calls res.json if success', async () => {
       Sinon.stub(productsService, 'register').resolves(newProduct)
-
+      
       const res = {
         status: Sinon.stub().callsFake(() => res),
         json: Sinon.stub().returns()
       }
-
+      
       await productsController.register({ body: { name: newProduct.name } }, res)
-
+      
       expect(res.status.getCall(0).args[0]).to.be.eq(201)
       expect(res.json.getCall(0).args[0]).to.be.deep.eq(newProduct)
     })
   })
-
+  
   describe('update', () => {
     it('should throw an error if validators.validateProdBodyReq throws', () => {
       Sinon.stub(validators, 'validateProdBodyReq').rejects()
       
       return expect(productsController.update({}))
-        .to.eventually.be.rejected
+      .to.eventually.be.rejected
     })
-
+    
     it('should throw an error if validators.validateProdBodyMin throws', () => {
       Sinon.stub(validators, 'validateProdBodyReq').resolves()
       Sinon.stub(validators, 'validateProdBodyMin').rejects()
-  
+      
       return expect(productsController.update({}))
-        .to.eventually.be.rejected
+      .to.eventually.be.rejected
     })
-
+    
     it('should throw an error if productsService.update throws', () => {
       Sinon.stub(validators, 'validateProdBodyReq').resolves()
       Sinon.stub(validators, 'validateProdBodyMin').resolves()
       Sinon.stub(productsService, 'update').rejects()
-  
+      
       return expect(productsController.update({}))
-        .to.eventually.be.rejected
+      .to.eventually.be.rejected
     })
-
+    
     it('should calls res.json if success', async () => {
       Sinon.stub(productsService, 'update').resolves(updProduct)
-
+      
       const req = {
         body: { name: updProduct.name },
         params: { id: updProduct.id }
       }
-
+      
       const res = {
         status: Sinon.stub().callsFake(() => res),
         json: Sinon.stub().returns()
       }
-
+      
       await productsController.update(req, res)
-
+      
       expect(res.status.getCall(0).args[0]).to.be.eq(200)
       expect(res.json.getCall(0).args[0]).to.be.deep.eq(updProduct)
+    })
+  })
+  
+  describe('delete', () => { 
+    it('should throw an error if productsService.delete throws', () => {
+      Sinon.stub(productsService, 'delete').rejects()
+      
+      return expect(productsController.delete({}, {}))
+      .to.eventually.be.rejected
+    })
+
+    it('should calls res.json if success', async () => {
+      Sinon.stub(productsService, 'delete').resolves()
+  
+      const res = {
+        sendStatus: Sinon.stub().callsFake(() => res),
+      }
+  
+      await productsController.delete({ params: {} }, res)
+  
+      expect(res.sendStatus.getCall(0).args[0]).to.be.eq(204)
     })
   })
 })
