@@ -14,32 +14,40 @@ const productsController = {
 
     res.status(200).json(product);
   },
-
+  
   register: async (req, res) => {
     const body = await validators.validateProdBodyReq(req.body);
     const { name } = await validators.validateProdBodyMin(body);
     const newProduct = await productsService.register(name);
-
+    
     res.status(201).json(newProduct);
   },
-
+  
   async update(req, res) {
     const id = Number(req.params.id);
     const body = await validators.validateProdBodyReq(req.body);
     const { name } = await validators.validateProdBodyMin(body);
-
+    
     const updProduct = await productsService.update(id, name);
-
+    
     res.status(200).json(updProduct);
   },
-
+  
   async delete(req, res) {
     const id = Number(req.params.id);
-
+    
     await productsService.delete(id);
-
+    
     res.sendStatus(204);
   },
+  
+    async search(req, res) {
+      const { q } = req.query;
+  
+      const result = await productsService.search(q);
+
+      res.status(200).json(result);
+    },
 };
 
 module.exports = productsController;
