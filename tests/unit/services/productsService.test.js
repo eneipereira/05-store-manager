@@ -129,4 +129,34 @@ describe('services/productsService', () => {
         .to.eventually.be.rejected
     });
   })
+
+  describe('search', () => {
+    it('should return an object array with the matched product', () => {
+      Sinon.stub(productsModel, 'search').resolves(newProduct)
+
+      return expect(productsService.search(''))
+        .to.eventually.be.deep.eq(newProduct)
+    })
+
+    it('should return an empty array if it doesn\'t match any product', () => {
+      Sinon.stub(productsModel, 'search').resolves([])
+
+      return expect(productsService.search(''))
+        .to.eventually.be.deep.eq([])
+    })
+
+    it('should return an objects array if no term is passed', () => {
+      Sinon.stub(productsModel, 'search').resolves(products)
+
+      return expect(productsService.search(''))
+        .to.eventually.be.deep.eq(products)
+    })
+
+    it('should throw an error if productsModel.search throws', () => {
+      Sinon.stub(productsModel, 'search').rejects()
+
+      return expect(productsService.search())
+        .to.eventually.be.rejected
+    })
+  })
 })

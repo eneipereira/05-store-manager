@@ -159,4 +159,55 @@ describe('controllers/productsController', () => {
       expect(res.sendStatus.getCall(0).args[0]).to.be.eq(204)
     })
   })
+
+  describe('search', () => {
+    it('should return an object array with the matched product', async () => {
+      Sinon.stub(productsService, 'search').resolves(newProduct)
+
+      const res = {
+        status: Sinon.stub().callsFake(() => res),
+        json: Sinon.stub().returns()
+      }
+
+      await productsController.search({query: {}}, res)
+
+      expect(res.status.getCall(0).args[0]).to.be.eq(200)
+      expect(res.json.getCall(0).args[0]).to.be.deep.eq(newProduct)
+    })
+
+    it('should return an empty array if it doesn\'t match any product', async () => {
+      Sinon.stub(productsService, 'search').resolves([])
+
+      const res = {
+        status: Sinon.stub().callsFake(() => res),
+        json: Sinon.stub().returns()
+      }
+
+      await productsController.search({ query: {} }, res)
+
+      expect(res.status.getCall(0).args[0]).to.be.eq(200)
+      expect(res.json.getCall(0).args[0]).to.be.deep.eq([])
+    })
+
+    it('should return an objects array if no term is passed', async () => {
+      Sinon.stub(productsService, 'search').resolves(products)
+
+      const res = {
+        status: Sinon.stub().callsFake(() => res),
+        json: Sinon.stub().returns()
+      }
+
+      await productsController.search({ query: {} }, res)
+
+      expect(res.status.getCall(0).args[0]).to.be.eq(200)
+      expect(res.json.getCall(0).args[0]).to.be.deep.eq(products)
+    })
+
+    it('should throw an error if productsService.search throws', () => {
+      Sinon.stub(productsService, 'search').rejects()
+
+      return expect(productsController.search())
+        .to.eventually.be.rejected
+    })
+  })
 })
