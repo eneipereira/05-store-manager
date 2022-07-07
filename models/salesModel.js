@@ -35,6 +35,20 @@ const salesModel = {
 
     await db.query(query, [saleId, productId, quantity]);
   },
+  
+  async exists(id) {
+    const query = 'select 1 from StoreManager.sales where id = ?;';
+
+    const [[exists]] = await db.query(query, [id]);
+
+    return !!exists;
+  },
+
+  async delete(id) {
+    const query = 'delete from StoreManager.sales where id = 1;';
+
+    await db.query(query, [id]);
+  },
 };
 
 module.exports = salesModel;

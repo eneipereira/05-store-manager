@@ -24,6 +24,14 @@ const salesService = {
 
     return { id, itemsSold };
   },
+
+  async delete(id) {
+    const exists = await salesModel.exists(id);
+
+    if (!exists) throw new NotFoundError('Sale not found');
+
+    await salesModel.delete(id);
+  },
 };
 
 module.exports = salesService;
