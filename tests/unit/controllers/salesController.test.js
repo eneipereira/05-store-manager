@@ -106,4 +106,25 @@ describe('controllers/salesController', () => {
       expect(res.json.getCall(0).args[0]).to.be.deep.eq(newSale)
     })
   })
+
+  describe('delete', () => {
+    it('should throw an error if salesService.delete throws', () => {
+      Sinon.stub(salesService, 'delete').rejects()
+
+      return expect(salesController.delete({}, {}))
+        .to.eventually.be.rejected
+    })
+
+    it('should calls res.json if success', async () => {
+      Sinon.stub(salesService, 'delete').resolves()
+
+      const res = {
+        sendStatus: Sinon.stub().callsFake(() => res),
+      }
+
+      await salesController.delete({ params: {} }, res)
+
+      expect(res.sendStatus.getCall(0).args[0]).to.be.eq(204)
+    })
+  })
 })

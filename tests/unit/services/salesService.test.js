@@ -64,4 +64,35 @@ describe('services/salesService', () => {
         .to.eventually.be.deep.eq(newSale)
     })
   })
+  
+  describe('delete', () => {
+    it('should return undefined if success', () => {
+      Sinon.stub(salesModel, 'delete').resolves()
+
+      return expect(salesService.delete(1))
+        .to.eventually.be.undefined
+    });
+
+    it('should throw an error if salesModel.exists return false', () => {
+      Sinon.stub(salesModel, 'exists').resolves(false)
+
+      return expect(salesService.delete(22))
+        .to.eventually.be.rejectedWith(NotFoundError)
+    });
+
+    it('should throw an error if salesModel.exists throws', () => {
+      Sinon.stub(salesModel, 'exists').rejects()
+
+      return expect(salesService.delete(1))
+        .to.eventually.be.rejected
+    });
+
+    it('should throw an error if salesModel.delete throws', () => {
+      Sinon.stub(salesModel, 'exists').resolves()
+      Sinon.stub(salesModel, 'delete').rejects()
+
+      return expect(salesService.delete(1))
+        .to.eventually.be.rejected
+    });
+  })
 })

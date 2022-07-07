@@ -73,4 +73,42 @@ describe('models/salesModel', () => {
         .to.eventually.be.undefined
     });
   })
+  describe('exists', () => {
+    it('should return true if the item is found', () => {
+      Sinon.stub(db, 'query').resolves([[{}]])
+
+      return expect(salesModel.exists(1))
+        .to.eventually.be.true
+    })
+
+    it('should return false if no items are found', () => {
+      Sinon.stub(db, 'query').resolves([[]])
+
+      return expect(salesModel.exists(22))
+        .to.eventually.be.false
+    })
+
+    it('should throw an error if db.query throws', () => {
+      Sinon.stub(db, 'query').rejects()
+
+      return expect(salesModel.exists(22))
+        .to.eventually.be.rejected
+    })
+  })
+
+  describe('delete', () => {
+    it('should return undefined if success', () => {
+      Sinon.stub(db, 'query').resolves()
+
+      return expect(salesModel.delete(1))
+        .to.eventually.be.undefined
+    })
+
+    it('should throw an error if db.query throws', () => {
+      Sinon.stub(db, 'query').rejects()
+
+      return expect(salesModel.delete(22))
+        .to.eventually.be.rejected
+    })
+  })
 })
