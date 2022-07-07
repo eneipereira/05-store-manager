@@ -47,9 +47,15 @@ const newSale = {
   ]
 }
 
+const updProduct = {
+  id: 1,
+  name: 'Martelo de Thor'
+}
+
 module.exports = {
   products,
   newProduct,
+  updProduct,
   sales,
   sale,
   newSale

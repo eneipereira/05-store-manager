@@ -2,7 +2,7 @@ const { expect } = require("chai");
 const Sinon = require("sinon");
 const db = require("../../../models/connection");
 const productsModel = require("../../../models/productsModel");
-const { products, newProduct } = require("../dbMock");
+const { products, newProduct, updProduct } = require("../dbMock");
 
 describe('models/productsModel', () => {
   beforeEach(Sinon.restore)
@@ -52,6 +52,45 @@ describe('models/productsModel', () => {
       Sinon.stub(db, 'query').rejects()
 
       return expect(productsModel.register(newProduct.name))
+        .to.eventually.be.rejected
+    })
+  })
+
+  describe('update', () => {
+    it('should return an object with the updated product', () => {
+      Sinon.stub(db, 'query').resolves(updProduct)
+
+      return expect(productsModel.update(updProduct.name, updProduct.id))
+        .to.eventually.deep.eq(updProduct)
+    })
+
+    it('should throw an error if db.query throws', () => {
+      Sinon.stub(db, 'query').rejects()
+
+      return expect(productsModel.update('', 1))
+        .to.eventually.be.rejected
+    })
+  })
+
+  describe('exists', () => {
+    it('should return true if the item is found', () => {
+      Sinon.stub(db, 'query').resolves([[{}]])
+
+      return expect(productsModel.exists(updProduct.id))
+        .to.eventually.be.true
+    })
+
+    it('should return false if no items are found', () => {
+      Sinon.stub(db, 'query').resolves([[]])
+
+      return expect(productsModel.exists(22))
+        .to.eventually.be.false
+    })
+
+    it('should throw an error if db.query throws', () => {
+      Sinon.stub(db, 'query').rejects()
+
+      return expect(productsModel.exists(22))
         .to.eventually.be.rejected
     })
   })

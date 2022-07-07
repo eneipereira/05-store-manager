@@ -2,7 +2,7 @@ const { expect } = require("chai")
 const Sinon = require("sinon")
 const productsService = require("../../../services/productsService")
 const productsController = require("../../../controllers/productsController")
-const { products, newProduct } = require("../dbMock")
+const { products, newProduct, updProduct } = require("../dbMock")
 const validators = require("../../../validators/validators")
 
 describe('controllers/productsController', () => {
@@ -91,6 +91,51 @@ describe('controllers/productsController', () => {
 
       expect(res.status.getCall(0).args[0]).to.be.eq(201)
       expect(res.json.getCall(0).args[0]).to.be.deep.eq(newProduct)
+    })
+  })
+
+  describe('update', () => {
+    it('should throw an error if validators.validateProdBodyReq throws', () => {
+      Sinon.stub(validators, 'validateProdBodyReq').rejects()
+      
+      return expect(productsController.update({}))
+        .to.eventually.be.rejected
+    })
+
+    it('should throw an error if validators.validateProdBodyMin throws', () => {
+      Sinon.stub(validators, 'validateProdBodyReq').resolves()
+      Sinon.stub(validators, 'validateProdBodyMin').rejects()
+  
+      return expect(productsController.update({}))
+        .to.eventually.be.rejected
+    })
+
+    it('should throw an error if productsService.update throws', () => {
+      Sinon.stub(validators, 'validateProdBodyReq').resolves()
+      Sinon.stub(validators, 'validateProdBodyMin').resolves()
+      Sinon.stub(productsService, 'update').rejects()
+  
+      return expect(productsController.update({}))
+        .to.eventually.be.rejected
+    })
+
+    it('should calls res.json if success', async () => {
+      Sinon.stub(productsService, 'update').resolves(updProduct)
+
+      const req = {
+        body: { name: updProduct.name },
+        params: { id: updProduct.id }
+      }
+
+      const res = {
+        status: Sinon.stub().callsFake(() => res),
+        json: Sinon.stub().returns()
+      }
+
+      await productsController.update(req, res)
+
+      expect(res.status.getCall(0).args[0]).to.be.eq(200)
+      expect(res.json.getCall(0).args[0]).to.be.deep.eq(updProduct)
     })
   })
 })
