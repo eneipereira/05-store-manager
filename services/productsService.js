@@ -31,6 +31,14 @@ const productsService = {
 
     return updProduct;
   },
+
+  async delete(id) {
+    const exists = await productsModel.exists(id);
+
+    if (!exists) throw new NotFoundError('Product not found');
+
+    await productsModel.delete(id);
+  },
 };
 
 module.exports = productsService;

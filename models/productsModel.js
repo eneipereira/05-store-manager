@@ -46,6 +46,12 @@ const productsModel = {
 
     return !!exists;
   },
+
+  async delete(id) {
+    const query = 'delete from StoreManager.products where id = ?;';
+
+    await db.query(query, [id]);
+  },
 };
 
 module.exports = productsModel;
