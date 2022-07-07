@@ -3,7 +3,7 @@ const chaiAsPromised = require("chai-as-promised");
 const Sinon = require("sinon");
 const db = require("../../../models/connection");
 const salesModel = require("../../../models/salesModel");
-const { sales, sale } = require("../dbMock");
+const { sales, sale, updSale } = require("../dbMock");
 
 use(chaiAsPromised)
 
@@ -73,6 +73,23 @@ describe('models/salesModel', () => {
         .to.eventually.be.undefined
     });
   })
+
+  describe('update', () => {
+    it('should return an object with the updated sale', () => {
+      Sinon.stub(db, 'query').resolves()
+
+      return expect(salesModel.update(1, {}))
+        .to.eventually.be.undefined
+    })
+
+    it('should throw an error if db.query throws', () => {
+      Sinon.stub(db, 'query').rejects()
+
+      return expect(salesModel.update(1, {}))
+        .to.eventually.be.rejected
+    })
+  })
+
   describe('exists', () => {
     it('should return true if the item is found', () => {
       Sinon.stub(db, 'query').resolves([[{}]])

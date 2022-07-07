@@ -49,7 +49,21 @@ const newSale = {
 
 const updProduct = {
   id: 1,
-  name: 'Martelo de Thor'
+  name: "Martelo do Batman"
+}
+
+const updSale = {
+  saleId: 1,
+  itemsUpdated: [
+    {
+      "productId": 1,
+      "quantity": 10
+    },
+    {
+      "productId": 2,
+      "quantity": 50
+    }
+  ]
 }
 
 module.exports = {
@@ -58,5 +72,6 @@ module.exports = {
   updProduct,
   sales,
   sale,
-  newSale
+  newSale,
+  updSale
 };

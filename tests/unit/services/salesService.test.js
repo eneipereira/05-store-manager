@@ -4,7 +4,7 @@ const Sinon = require("sinon")
 const NotFoundError = require("../../../errors/notFoundError")
 const salesModel = require("../../../models/salesModel")
 const salesService = require("../../../services/salesService")
-const { newSale, sales, sale } = require("../dbMock")
+const { newSale, sales, sale, updSale } = require("../dbMock")
 
 use(chaiAsPromised)
 
@@ -62,6 +62,38 @@ describe('services/salesService', () => {
 
       return expect(salesService.register(newSale.itemsSold))
         .to.eventually.be.deep.eq(newSale)
+    })
+  })
+
+  describe('update', () => {
+    it('should return an object with the updated product as result', () => {
+      Sinon.stub(salesModel, 'exists').resolves(updSale.saleId)
+      Sinon.stub(salesModel, 'update').resolves(updSale)
+
+      return expect(salesService.update(updSale.saleId, updSale.itemsUpdated))
+        .to.eventually.be.deep.eq(updSale)
+    })
+
+    it('should throw an error if salesModel.exists return false', () => {
+      Sinon.stub(salesModel, 'exists').resolves(false);
+
+      return expect(salesService.update(22))
+        .to.eventually.be.rejectedWith(NotFoundError)
+    })
+
+    it('should throw an error if salesModel.exists throws', () => {
+      Sinon.stub(salesModel, 'exists').rejects();
+
+      return expect(salesService.update(1, []))
+        .to.eventually.be.rejected
+    })
+
+    it('should throw an error if salesModel.update throws', () => {
+      Sinon.stub(salesModel, 'exists').resolves();
+      Sinon.stub(salesModel, 'update').rejects();
+
+      return expect(salesService.update(1, []))
+        .to.eventually.be.rejected
     })
   })
   

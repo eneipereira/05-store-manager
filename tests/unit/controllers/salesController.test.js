@@ -4,7 +4,7 @@ const Sinon = require("sinon")
 const salesController = require("../../../controllers/salesController")
 const salesService = require("../../../services/salesService")
 const validators = require("../../../validators/validators")
-const { newSale, sales, sale } = require("../dbMock")
+const { newSale, sales, sale, updSale } = require("../dbMock")
 
 use(chaiAsPromised)
 
@@ -74,8 +74,8 @@ describe('controllers/salesController', () => {
     })
 
     it('should throw an error if validators.checkExistsId throws', () => {
-      Sinon.stub(validators, 'validateProdBodyReq').resolves()
-      Sinon.stub(validators, 'validateProdBodyMin').resolves()
+      Sinon.stub(validators, 'validateSaleBodyReq').resolves()
+      Sinon.stub(validators, 'validateSaleBodyMin').resolves()
       Sinon.stub(validators, 'checkExistsId').rejects()
 
       return expect(salesController.register({}))
@@ -83,8 +83,8 @@ describe('controllers/salesController', () => {
     })
 
     it('should throw an error if salesService.register throws', () => {
-      Sinon.stub(validators, 'validateProdBodyReq').resolves()
-      Sinon.stub(validators, 'validateProdBodyMin').resolves()
+      Sinon.stub(validators, 'validateSaleBodyReq').resolves()
+      Sinon.stub(validators, 'validateSaleBodyMin').resolves()
       Sinon.stub(validators, 'checkExistsId').resolves()
       Sinon.stub(salesService, 'register').rejects()
 
@@ -104,6 +104,51 @@ describe('controllers/salesController', () => {
 
       expect(res.status.getCall(0).args[0]).to.be.eq(201)
       expect(res.json.getCall(0).args[0]).to.be.deep.eq(newSale)
+    })
+  })
+
+  describe('update', () => {
+    it('should throw an error if validators.validateSaleBodyReq throws', () => {
+      Sinon.stub(validators, 'validateSaleBodyReq').rejects()
+
+      return expect(salesController.update({}))
+        .to.eventually.be.rejected
+    })
+
+    it('should throw an error if validators.validateSaleBodyMin throws', () => {
+      Sinon.stub(validators, 'validateSaleBodyReq').resolves()
+      Sinon.stub(validators, 'validateSaleBodyMin').rejects()
+
+      return expect(salesController.update({}))
+        .to.eventually.be.rejected
+    })
+
+    it('should throw an error if productsService.update throws', () => {
+      Sinon.stub(validators, 'validateSaleBodyReq').resolves()
+      Sinon.stub(validators, 'validateSaleBodyMin').resolves()
+      Sinon.stub(salesService, 'update').rejects()
+
+      return expect(salesController.update({}))
+        .to.eventually.be.rejected
+    })
+
+    it('should calls res.json if success', async () => {
+      Sinon.stub(salesService, 'update').resolves(updSale)
+
+      const req = {
+        body: updSale.itemsUpdated,
+        params: { id: updSale.saleId }
+      }
+
+      const res = {
+        status: Sinon.stub().callsFake(() => res),
+        json: Sinon.stub().returns()
+      }
+
+      await salesController.update(req, res)
+
+      expect(res.status.getCall(0).args[0]).to.be.eq(200)
+      expect(res.json.getCall(0).args[0]).to.be.deep.eq(updSale)
     })
   })
 
